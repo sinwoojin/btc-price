@@ -44,3 +44,4 @@ bun dev
 가장 쉬운 배포 방법은 [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)을 이용하는 것입니다.
 
 자세한 내용은 [Next.js 배포 문서](https://nextjs.org/docs/app/building-your-application/deploying)를
+aa

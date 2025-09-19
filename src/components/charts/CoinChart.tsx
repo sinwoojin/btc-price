@@ -1,37 +1,39 @@
 "use client";
 
-import { connectTradeStream } from "@/lib/api/ws";
 import {
   CandlestickData,
+  CandlestickSeries,
   createChart,
   IChartApi,
   ISeriesApi,
   Time,
-  CandlestickSeries,
 } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
-// 초기 차트 데이터의 타입 정의
 type InitialChartData = [
-  number,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
-  string,
-  number,
-  string,
-  string,
-  string
+  number, // Open time
+  string, // Open
+  string, // High
+  string, // Low
+  string, // Close
+  string, // Volume
+  number, // Close time
+  string, // Quote asset volume
+  number, // Number of trades
+  string, // Taker buy base asset volume
+  string, // Taker buy quote asset volume
+  string // Ignore
 ];
 
 interface CoinChartProps {
   initialData: InitialChartData[];
+  symbol?: string;
 }
 
-export default function CoinChart({ initialData }: CoinChartProps) {
+export default function CoinChart({
+  initialData,
+  symbol = "btcusdt",
+}: CoinChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<IChartApi | null>(null);
   const seriesInstance = useRef<ISeriesApi<"Candlestick"> | null>(null);
@@ -39,81 +41,88 @@ export default function CoinChart({ initialData }: CoinChartProps) {
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    // 초기 데이터 포맷 변환
     const formattedInitialData: CandlestickData[] = initialData.map((d) => ({
-      time: Math.floor(d[0] / 1000) as Time, // Unix Timestamp (ms -> s)
-      open: parseFloat(d[1]),
-      high: parseFloat(d[2]),
-      low: parseFloat(d[3]),
-      close: parseFloat(d[4]),
+      time: Math.floor(d[0] / 1000) as Time,
+      open: Number(d[1]),
+      high: Number(d[2]),
+      low: Number(d[3]),
+      close: Number(d[4]),
+      volume: Number(d[5]),
+      closeTime: Math.floor(d[6] / 1000) as Time,
+      quoteAssetVolume: Number(d[7]),
+      numberOfTrades: d[8],
+      takerBuyBaseAssetVolume: Number(d[9]),
+      takerBuyQuoteAssetVolume: Number(d[10]),
+      ignore: d[11],
     }));
 
-    // 차트 생성
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
       height: 400,
       layout: {
-        background: { color: "#111827" },
-        textColor: "#cbd5e1",
+        background: { color: "#ffffff" },
+        textColor: "#111827",
+      },
+      grid: {
+        vertLines: { color: "#f3f4f6" },
+        horzLines: { color: "#f3f4f6" },
       },
       timeScale: {
         timeVisible: true,
-        secondsVisible: true,
+        secondsVisible: false,
       },
     });
 
-    // 캔들스틱 시리즈 추가 및 데이터 설정
-    const series = chart.addSeries(
-      CandlestickSeries,
-      {
-        upColor: "rgba( 38, 166, 154, 1)",
-        downColor: "rgba( 239, 83, 80, 1)",
-        borderVisible: false,
-        wickColor: "rgba( 38, 166, 154, 1)",
-        wickDownColor: "rgba( 239, 83, 80, 1)",
-      }
-    );
+    const series = chart.addSeries(CandlestickSeries, {
+      upColor: "#16a34a",
+      borderUpColor: "#16a34a",
+      wickUpColor: "#16a34a",
+      downColor: "#dc2626",
+      borderDownColor: "#dc2626",
+      wickDownColor: "#dc2626",
+    });
+
     series.setData(formattedInitialData);
 
     chartInstance.current = chart;
     seriesInstance.current = series;
 
-    // 리사이즈 대응
+    const ws = new WebSocket(
+      `wss://testnet.binance.vision/stream?streams=${symbol.toLowerCase()}@kline_1m`
+    );
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data?.data?.e === "kline") {
+        const k = data.data.k;
+        const newCandle: CandlestickData = {
+          time: Math.floor(k.t / 1000) as Time,
+          open: Number(k.o),
+          high: Number(k.h),
+          low: Number(k.l),
+          close: Number(k.c),
+        };
+
+        if (seriesInstance.current) {
+          seriesInstance.current.update(newCandle);
+        }
+      }
+    };
+
     const resizeObserver = new ResizeObserver(() => {
       if (chartContainerRef.current) {
-        chart.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-        });
+        chart.applyOptions({ width: chartContainerRef.current.clientWidth });
       }
     });
     resizeObserver.observe(chartContainerRef.current);
 
-    // WebSocket 연결
-    const ws = connectTradeStream("btcusdt", (data) => {
-      // WebSocket 데이터 처리
-      const tradePrice = parseFloat(data.p);
-      const timeInSeconds = Math.floor(data.T / 1000);
-
-      // 차트 시리즈가 존재하는지 확인
-      if (seriesInstance.current) {
-        seriesInstance.current.update({
-          time: timeInSeconds as Time,
-          open: tradePrice,
-          high: tradePrice,
-          low: tradePrice,
-          close: tradePrice,
-        });
-      }
-    });
-
     return () => {
       ws.close();
       resizeObserver.disconnect();
-      if (chartInstance.current) {
-        chartInstance.current.remove();
-      }
+      chart.remove();
     };
-  }, [initialData]);
+  }, [initialData, symbol]);
 
   return <div ref={chartContainerRef} className="w-full h-96" />;
 }

@@ -1,30 +1,34 @@
-// src/components/TickerDisplay.tsx
 "use client";
 
 import { CountingNumber } from "@/components/ui/CountingNumber";
 import { connectTradeStream } from "@/lib/api/ws";
 import { useEffect, useRef, useState } from "react";
 
-export default function TickerDisplay() {
-  const [price, setPrice] = useState(0);
+// props 타입 정의
+interface TickerDisplayProps {
+  initialOpenPrice: number;
+}
+
+export default function TickerDisplay({
+  initialOpenPrice,
+}: TickerDisplayProps) {
+  const [price, setPrice] = useState(initialOpenPrice);
   const [changePercentage, setChangePercentage] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
-  const prevPriceRef = useRef(0);
 
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 바이낸스 WebSocket 스트림에 연결
+    // 컴포넌트 마운트 시 초기값 설정
+    setPrice(initialOpenPrice);
+
+    // WebSocket 스트림에 연결
     const ws = connectTradeStream("btcusdt", (data) => {
       const newPrice = parseFloat(data.p);
-      const prevPrice = prevPriceRef.current;
-
-      // 이전 가격과 현재 가격을 비교하여 퍼센트 변화율 계산
-      if (prevPrice !== 0) {
-        const percentageChange = ((newPrice - prevPrice) / prevPrice) * 100;
-        setChangePercentage(percentageChange);
-      }
-
       setPrice(newPrice);
-      prevPriceRef.current = newPrice;
+
+      // 오늘의 시가와 현재가를 비교하여 변화율 계산
+      const percentageChange =
+        ((newPrice - initialOpenPrice) / initialOpenPrice) * 100;
+      setChangePercentage(percentageChange);
     });
 
     wsRef.current = ws;
@@ -35,15 +39,15 @@ export default function TickerDisplay() {
         wsRef.current.close();
       }
     };
-  }, []);
+  }, [initialOpenPrice]); // initialOpenPrice가 변경될 때마다 useEffect 재실행
 
-  // 가격 변화에 따라 글자 색상 결정
+  // 변화율에 따라 글자 색상 결정
   const priceColor =
     changePercentage > 0
       ? "text-green-500"
       : changePercentage < 0
       ? "text-red-500"
-      : "text-white";
+      : "text-gray-400";
 
   return (
     <div className="flex flex-col items-center justify-center p-4 rounded-lg shadow-lg">

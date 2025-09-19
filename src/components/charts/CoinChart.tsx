@@ -7,6 +7,7 @@ import {
   IChartApi,
   ISeriesApi,
   Time,
+  CandlestickSeries,
 } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
@@ -63,7 +64,7 @@ export default function CoinChart({ initialData }: CoinChartProps) {
 
     // 캔들스틱 시리즈 추가 및 데이터 설정
     const series = chart.addSeries(
-      { type: "Candlestick" },
+      CandlestickSeries,
       {
         upColor: "rgba( 38, 166, 154, 1)",
         downColor: "rgba( 239, 83, 80, 1)",

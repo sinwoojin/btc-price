@@ -1,6 +1,6 @@
 // src/app/(main)/layout.tsx
 
-import Bottom from "@/components/common/Bottom";
+import BottomNav from "@/components/common/Bottom";
 import Footer from "@/components/common/Footer";
 
 import ThemeProvider from "@/lib/utils/theme-context";
@@ -16,7 +16,7 @@ export default function MainLayout({
         <main className="flex-grow container mx-auto p-4 md:p-8">
           {children}
         </main>
-        <Bottom />
+        <BottomNav />
         <Footer />
       </div>
     </ThemeProvider>

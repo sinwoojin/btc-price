@@ -17,10 +17,8 @@ export default function TickerDisplay({
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    // 컴포넌트 마운트 시 초기값 설정
     setPrice(initialOpenPrice);
 
-    // WebSocket 스트림에 연결
     const ws = connectTradeStream("btcusdt", (data) => {
       const newPrice = parseFloat(data.p);
       setPrice(newPrice);
@@ -33,15 +31,13 @@ export default function TickerDisplay({
 
     wsRef.current = ws;
 
-    // 컴포넌트 언마운트 시 WebSocket 연결 종료
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
     };
-  }, [initialOpenPrice]); // initialOpenPrice가 변경될 때마다 useEffect 재실행
+  }, [initialOpenPrice]);
 
-  // 변화율에 따라 글자 색상 결정
   const priceColor =
     changePercentage > 0
       ? "text-green-500"

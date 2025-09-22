@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  CandlestickSeries,
   CandlestickData,
+  CandlestickSeries,
   createChart,
   IChartApi,
   ISeriesApi,
-  Time,
   PriceScaleMode,
+  Time,
 } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
@@ -43,15 +43,23 @@ export default function CoinChart({
   const clampCandle = (
     prevClose: number | null,
     candle: CandlestickData,
-    pct = 0.25
+    pct = 0.05
   ): CandlestickData => {
     const baseline = prevClose ?? candle.open ?? candle.close;
     const range = [baseline * (1 - pct), baseline * (1 + pct)];
 
     const open = Math.min(Math.max(candle.open, range[0]), range[1]);
     const close = Math.min(Math.max(candle.close, range[0]), range[1]);
-    const high = Math.max(open, close, Math.min(Math.max(candle.high, range[0]), range[1]));
-    const low = Math.min(open, close, Math.min(Math.max(candle.low, range[0]), range[1]));
+    const high = Math.max(
+      open,
+      close,
+      Math.min(Math.max(candle.high, range[0]), range[1])
+    );
+    const low = Math.min(
+      open,
+      close,
+      Math.min(Math.max(candle.low, range[0]), range[1])
+    );
 
     return { time: candle.time, open, high, low, close };
   };
@@ -66,7 +74,7 @@ export default function CoinChart({
         low: Number(d[3]),
         close: Number(d[4]),
       };
-      const cleanedCandle = clampCandle(lastClose, candle);
+      const cleanedCandle = clampCandle(lastClose, candle, 0.005);
       lastClose = cleanedCandle.close;
       return cleanedCandle;
     });
@@ -88,15 +96,17 @@ export default function CoinChart({
       timeScale: { timeVisible: true, secondsVisible: false },
     });
 
-    chart.priceScale("right").applyOptions({ mode: PriceScaleMode.Logarithmic });
+    chart
+      .priceScale("right")
+      .applyOptions({ mode: PriceScaleMode.Logarithmic });
 
     const series = chart.addSeries(CandlestickSeries, {
-      upColor: "#16a34a",
-      borderUpColor: "#16a34a",
-      wickUpColor: "#16a34a",
-      downColor: "#dc2626",
-      borderDownColor: "#dc2626",
-      wickDownColor: "#dc2626",
+      upColor: "#dc2626",
+      borderUpColor: "#dc2626",
+      wickUpColor: "#dc2626",
+      downColor: "#3c47e1",
+      borderDownColor: "#3c47e1",
+      wickDownColor: "#3c47e1",
     });
 
     series.setData(formattedData);

@@ -1,6 +1,7 @@
 // src/lib/api/ws.ts
 
-const WS_URL = "wss://testnet.binance.vision/ws";
+// const WS_URL = "wss://testnet.binance.vision/ws";
+const WS_URL = "wss://stream.binance.com:9443/ws";
 
 export const connectTradeStream = (
   symbol: string,

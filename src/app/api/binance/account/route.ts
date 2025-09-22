@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 
 const API_KEY = process.env.NEXT_PUBLIC_BINANCE_API_KEY;
 const API_SECRET = process.env.NEXT_PUBLIC_BINANCE_API_SECRET;
-const BASE_URL = "https://testnet.binance.vision/api/v3";
+// const BASE_URL = "https://testnet.binance.vision/api/v3";
+const BASE_URL = "https://stream.binance.com:9443/api/v3";
 
 // 환경 변수 값 확인용 console.log 추가
 console.log("API Key:", API_KEY ? "Loaded" : "Not Loaded");

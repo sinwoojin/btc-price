@@ -47,7 +47,7 @@ export const CountingNumber = ({
   }, [value, duration]);
 
   // toFixed 속성을 적용하여 소수점 자릿수 조절
-  const displayValue = currentValue.toFixed(toFixed);
+  const displayValue = Number(currentValue.toFixed(toFixed)).toLocaleString();
 
   return <>{displayValue}</>;
 };

@@ -1,6 +1,6 @@
 // src/app/(main)/page.tsx
 
-import CoinChart from "@/components/charts/CoinChart";
+import TradingViewWidget from "@/components/charts/TradingViewWidget";
 import TickerDisplay from "@/components/TickerDisplay";
 import { getKlineData } from "@/lib/api/binance";
 
@@ -15,7 +15,7 @@ export default async function HomePage() {
         <TickerDisplay initialOpenPrice={initialOpenPrice} />
       </div>
       <div className="w-full lg:w-4/5">
-        <CoinChart initialData={initialKlineData} />
+        <TradingViewWidget />
       </div>
     </div>
   );

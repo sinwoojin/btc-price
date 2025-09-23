@@ -5,10 +5,10 @@ const BASE_URL = "http://localhost:5000/api/v1";
 let isRefreshing = false;
 let failedQueue: {
   resolve: (value: string) => Promise<void>;
-  reject: (reason?: any) => void;
+  reject: <T>(reason?: T) => void;
 }[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown | null, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (token) {
       resolve(token);

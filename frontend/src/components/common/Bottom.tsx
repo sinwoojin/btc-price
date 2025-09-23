@@ -5,7 +5,7 @@ export default function BottomNav() {
     { href: "/", label: "Home", icon: "🏠" },
     { href: "/trade", label: "Trade", icon: "⚖️" },
     { href: "/ranking", label: "Ranking", icon: "🏆" },
-    { href: "/myPage", label: "Me", icon: "👤" },
+    { href: "/account", label: "Me", icon: "👤" },
   ];
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t ">

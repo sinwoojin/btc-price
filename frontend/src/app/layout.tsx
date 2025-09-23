@@ -1,5 +1,8 @@
 // src/app/layout.tsx
 
+import BottomNav from "@/components/common/Bottom";
+import { AuthUserProvider } from "@/context/AuthUserProvider";
+import ThemeProvider from "@/lib/utils/theme-context";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -40,7 +43,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-white text-black`}
       >
-        {children}
+        <ThemeProvider>
+          <AuthUserProvider>
+            {children}
+            <BottomNav />
+          </AuthUserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

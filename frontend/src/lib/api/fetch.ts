@@ -1,6 +1,5 @@
+import { BASE_URL } from "@/config/api";
 import { refreshAccessTokenAPI } from "./auth";
-
-const BASE_URL = "http://localhost:5000/api/v1";
 
 let isRefreshing = false;
 let failedQueue: {

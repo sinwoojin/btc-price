@@ -14,7 +14,7 @@ export default function BottomNav() {
           <li key={it.href} className="flex-1 text-center py-2">
             <Link href={it.href} className="flex flex-col items-center">
               <span className="text-lg">{it.icon}</span>
-              <span className="mt-1">{it.label}</span>
+              <span className="mt-1 text-black">{it.label}</span>
             </Link>
           </li>
         ))}

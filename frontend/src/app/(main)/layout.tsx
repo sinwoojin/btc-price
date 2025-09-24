@@ -1,13 +1,21 @@
 // src/app/(main)/layout.tsx
 
-export default function MainLayout({
+import type React from "react"
+import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/next"
+import { Suspense } from "react"
+
+export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <main className="flex-grow container mx-auto p-4 md:p-8">{children}</main>
-    </div>
-  );
+    <html lang="en" className="dark">
+      <body>
+        <Suspense fallback={null}>{children}</Suspense>
+        <Analytics />
+      </body>
+    </html>
+  )
 }

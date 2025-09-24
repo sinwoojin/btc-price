@@ -1,12 +1,22 @@
 "use client";
 
+import SettingCard from "@/components/SettingCard";
 import { fetchClient } from "@/lib/api/fetchClient";
+import { useTheme } from "@/lib/utils/theme-context";
 import Link from "next/link";
 import { useState } from "react";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const inputClass = `p-4 rounded-xl border outline-none mb-2 text-base ${
+    isDark
+      ? "bg-[#222] border-[#444] text-[#ededed]"
+      : "bg-white border-[#e5e8eb] text-[#222]"
+  }`;
 
   const handleLogin = async () =>
     await fetchClient("/auth/login", {
@@ -17,75 +27,49 @@ function LoginPage() {
     });
 
   return (
-    <div className="min-h-[100vh] bg-[#f9fafb] flex flex-col justify-center items-center">
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 24,
-          boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-          padding: "40px 32px",
-          width: 340,
-          display: "flex",
-          flexDirection: "column",
-          gap: 24,
-        }}
-      >
-        <h2 style={{ fontWeight: 700, fontSize: 28, color: "#222" }}>로그인</h2>
+    <div
+      className={`min-h-screen flex flex-col justify-center items-center ${
+        isDark ? "bg-[#171717]" : "bg-[#f9fafb]"
+      }`}
+    >
+      <SettingCard isDark={isDark}>
+        <h2
+          className={`font-bold text-2xl ${
+            isDark ? "text-[#ededed]" : "text-[#222]"
+          }`}
+        >
+          로그인
+        </h2>
         <input
           type="email"
           placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{
-            padding: "16px",
-            borderRadius: 12,
-            border: "1px solid #e5e8eb",
-            fontSize: 16,
-            outline: "none",
-            marginBottom: 8,
-          }}
+          className={inputClass}
         />
         <input
           type="password"
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{
-            padding: "16px",
-            borderRadius: 12,
-            border: "1px solid #e5e8eb",
-            fontSize: 16,
-            outline: "none",
-            marginBottom: 8,
-          }}
+          className={inputClass}
         />
         <button
-          style={{
-            background: "#3182f6",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 18,
-            border: "none",
-            borderRadius: 12,
-            padding: "16px",
-            cursor: "pointer",
-            marginTop: 8,
-            transition: "background 0.2s",
-          }}
+          className="bg-[#3182f6] text-white font-semibold text-lg rounded-xl py-4 mt-2 transition-colors duration-1000"
           onClick={handleLogin}
         >
           로그인하기
         </button>
-      </div>
-      <div style={{ marginTop: 24, color: "#8b95a1", fontSize: 15 }}>
-        계정이 없으신가요?{" "}
-        <Link
-          href="/signup"
-          style={{ color: "#3182f6", textDecoration: "none", fontWeight: 500 }}
-        >
-          회원가입
-        </Link>
-      </div>
+        <div className="mt-6 text-[#8b95a1] text-sm text-center">
+          계정이 없으신가요?{" "}
+          <Link
+            href="/signup"
+            className="text-[#3182f6] font-medium no-underline"
+          >
+            회원가입
+          </Link>
+        </div>
+      </SettingCard>
     </div>
   );
 }

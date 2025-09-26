@@ -1,10 +1,10 @@
 "use client"
-import { Card, CardContent } from "@components/ui/card"
-import { Badge } from "@components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs"
-import { MarketStats } from "./market-stats"
-import { CoinTable } from "./coin-table"
-import { TrendingCoins } from "./trending-coins"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { MarketStats } from "./MarketStats"
+import { CoinTable } from "./CoinTable"
+import { TrendingCoins } from "./TrendingCoins"
 
 export function MarketOverview() {
   return (

@@ -20,10 +20,6 @@
 ```bash
 npm run dev
 # 또는
-yarn dev
-# 또는
-pnpm dev
-# 또는
 bun dev
 ```
 

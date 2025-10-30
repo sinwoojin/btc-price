@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface User {
   email: string;
-  nickname: string;
+  name: string;
   profileImage: string;
   roomId: number;
   userId: number;

@@ -1,98 +1,177 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# BTC Price - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS 기반의 암호화폐 포트폴리오 관리 백엔드 API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 기술 스택
 
-## Description
+- **Framework**: NestJS
+- **Database**: SQLite (Prisma ORM)
+- **Authentication**: JWT (JSON Web Token)
+- **Real-time**: Socket.IO (WebSocket)
+- **Language**: TypeScript
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 주요 기능
 
-## Project setup
+### 🔐 인증 (Authentication)
+- 회원가입 (`POST /auth/register`)
+- 로그인 (`POST /auth/login`)
+- JWT 기반 인증
 
+### 💰 지갑 관리 (Wallet)
+- 잔액 조회 (`GET /wallet/balance`)
+- 코인 구매 (`POST /wallet/buy`)
+- 트랜잭션 기록
+
+### 🔄 실시간 업데이트 (WebSocket)
+- 지갑 잔액 변경 시 실시간 알림
+- Socket.IO 기반
+
+## 설치 및 실행
+
+### 1. 의존성 설치
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### 2. 환경 변수 설정
+`.env` 파일을 생성하고 다음 내용을 추가:
+```env
+DATABASE_URL="file:./dev.db"
+JWT_SECRET="your-secret-key"
+PORT=3001
 ```
 
-## Run tests
-
+### 3. 데이터베이스 마이그레이션
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma migrate dev --name init
+npx prisma generate
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 4. 서버 실행
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# 개발 모드
+npm run start:dev
+
+# 프로덕션 모드
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+서버는 `http://localhost:3001`에서 실행됩니다.
 
-## Resources
+## API 엔드포인트
 
-Check out a few resources that may come in handy when working with NestJS:
+### 인증
+```bash
+# 회원가입
+POST /auth/register
+Content-Type: application/json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "name": "User Name"
+}
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# 로그인
+POST /auth/login
+Content-Type: application/json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
 
-## Support
+### 지갑 (인증 필요)
+```bash
+# 잔액 조회
+GET /wallet/balance
+Authorization: Bearer {access_token}
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# 코인 구매
+POST /wallet/buy
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "coinId": "bitcoin",
+  "amount": 0.1,
+  "price": 50000
+}
+```
 
-## Stay in touch
+## 데이터베이스 스키마
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### User
+- `id`: 사용자 ID
+- `email`: 이메일 (unique)
+- `password`: 암호화된 비밀번호
+- `name`: 사용자 이름
+- `createdAt`: 생성일
 
-## License
+### Wallet
+- `id`: 지갑 ID
+- `balance`: 잔액
+- `userId`: 사용자 ID (1:1)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Transaction
+- `id`: 트랜잭션 ID
+- `walletId`: 지갑 ID
+- `coinId`: 코인 ID
+- `amount`: 수량
+- `price`: 가격
+- `type`: 거래 타입 (BUY/SELL)
+- `createdAt`: 생성일
+
+## 프로젝트 구조
+
+```
+backend/
+├── prisma/
+│   ├── schema.prisma      # 데이터베이스 스키마
+│   └── migrations/        # 마이그레이션 파일
+├── src/
+│   ├── auth/             # 인증 모듈
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── auth.module.ts
+│   │   └── jwt.strategy.ts
+│   ├── wallet/           # 지갑 모듈
+│   │   ├── wallet.controller.ts
+│   │   ├── wallet.service.ts
+│   │   └── wallet.module.ts
+│   ├── events/           # WebSocket 모듈
+│   │   ├── events.gateway.ts
+│   │   └── events.module.ts
+│   ├── prisma/           # Prisma 서비스
+│   │   ├── prisma.service.ts
+│   │   └── prisma.module.ts
+│   └── main.ts           # 애플리케이션 엔트리
+└── package.json
+```
+
+## 테스트
+
+```bash
+# 유닛 테스트
+npm run test
+
+# E2E 테스트
+npm run test:e2e
+
+# 테스트 커버리지
+npm run test:cov
+```
+
+## 개발 도구
+
+- **Prisma Studio**: 데이터베이스 GUI
+  ```bash
+  npx prisma studio
+  ```
+
+## CORS 설정
+
+프론트엔드(`http://localhost:3000`)에서의 요청을 허용하도록 CORS가 설정되어 있습니다.
+
+## 라이선스
+
+MIT

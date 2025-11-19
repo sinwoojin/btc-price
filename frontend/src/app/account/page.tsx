@@ -2,6 +2,7 @@
 
 import SettingCard from "@/components/SettingCard";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/AuthUserProvider";
 import { useTheme } from "@/lib/utils/theme-context";
 import Link from "next/link";
@@ -60,9 +61,9 @@ function Account() {
           >
             로그인
           </Link>
-          <button className="bg-[#e5e8eb] text-[#222] font-semibold text-base rounded-xl py-3 transition-colors duration-500">
+          <Button className="bg-[#e5e8eb] text-[#222] font-semibold text-base rounded-xl py-3 transition-colors duration-500">
             로그아웃
-          </button>
+          </Button>
         </div>
       </SettingCard>
     </div>

@@ -4,6 +4,7 @@ import { useTheme } from "@/lib/utils/theme-context";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { Moon, Search, Sun } from "lucide-react";
+import Link from "next/link";
 
 export function Header() {
   const { theme, toggleTheme } = useTheme();
@@ -30,7 +31,7 @@ export function Header() {
                 </span>
               </div>
               <span className={`text-xl font-bold ${textColor}`}>
-                CryptoMarket
+                Coin Arena
               </span>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
@@ -66,9 +67,9 @@ export function Header() {
                 <Moon className="w-4 h-4 " />
               )}
             </Button>
-            <Button variant="outline" className={`${textColor}`}>
+            <Link href={"/login"} className={`${textColor}`}>
               Login
-            </Button>
+            </Link>
             <Button>Sign Up</Button>
           </div>
         </div>

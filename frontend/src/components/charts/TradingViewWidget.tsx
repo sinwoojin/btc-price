@@ -20,7 +20,7 @@ function TradingViewWidget({ symbol }: { symbol: string }) {
     script.type = "text/javascript";
     script.async = true;
 
-    const tradingViewSymbol = `BINANCE:${symbol.replace("USDT", "USD")}`;
+    const tradingViewSymbol = `BINANCE:${symbol}`;
 
     script.innerHTML = `
       {
@@ -53,7 +53,7 @@ function TradingViewWidget({ symbol }: { symbol: string }) {
     }
   }, [symbol]);
 
-  const linkSymbol = symbol.replace("USDT", "USD");
+  const linkSymbol = symbol;
 
   return (
     <div className="tradingview-widget-container" ref={container}>

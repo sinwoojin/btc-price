@@ -4,6 +4,8 @@ import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Star, TrendingDown, TrendingUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface CoinData {
@@ -140,10 +142,10 @@ export function CoinTable() {
                   #
                 </th>
                 <th className="text-left p-4 font-medium text-muted-foreground">
-                  Name
+                  코인 이름(Name)
                 </th>
                 <th className="text-right p-4 font-medium text-muted-foreground">
-                  Price
+                  가격(Price)
                 </th>
                 <th className="text-right p-4 font-medium text-muted-foreground">
                   24h %
@@ -188,11 +190,14 @@ export function CoinTable() {
                   </td>
                   <td className="p-4">
                     <div className="flex items-center space-x-3">
-                      <img
-                        src={coin.image}
+                      <Image
+                        width={10}
+                        height={10}
+                        src={`https://s3-symbol-logo.tradingview.com/crypto/${coin}.svg`}
                         alt={coin.name}
                         className="w-8 h-8 rounded-full"
                         onError={(e) => {
+                          console.log("Image load error for", coin.symbol);
                           const img = e.target as HTMLImageElement;
                           if (
                             img.src !==
@@ -237,7 +242,7 @@ export function CoinTable() {
                   </td>
                   <td className="p-4 text-center">
                     <Button size="sm" variant="outline">
-                      Trade
+                      <Link href={`/stock/${coin.symbol}`}>Trade</Link>
                     </Button>
                   </td>
                 </tr>

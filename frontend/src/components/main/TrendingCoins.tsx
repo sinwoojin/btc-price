@@ -1,38 +1,41 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card"
-import { Badge } from "@components/ui/badge"
-import { Flame } from "lucide-react"
+import { Badge } from "@components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Flame } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface TrendingCoin {
-  id: string
-  name: string
-  symbol: string
-  market_cap_rank: number
-  thumb: string
-  price_btc: number
+  id: string;
+  name: string;
+  symbol: string;
+  market_cap_rank: number;
+  thumb: string;
+  price_btc: number;
 }
 
 export function TrendingCoins() {
-  const [trending, setTrending] = useState<TrendingCoin[]>([])
-  const [loading, setLoading] = useState(true)
+  const [trending, setTrending] = useState<TrendingCoin[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTrending()
-  }, [])
+    fetchTrending();
+  }, []);
 
   const fetchTrending = async () => {
     try {
-      const response = await fetch("https://api.coingecko.com/api/v3/search/trending")
-      const data = await response.json()
-      setTrending(data.coins.slice(0, 10))
-      setLoading(false)
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/search/trending"
+      );
+      const data = await response.json();
+      const coins = data.coins.slice(0, 10).map((c: any) => c.item);
+      setTrending(coins);
+      setLoading(false);
     } catch (error) {
-      console.error("Error fetching trending coins:", error)
-      setLoading(false)
+      console.error("Error fetching trending coins:", error);
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -43,7 +46,7 @@ export function TrendingCoins() {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -57,25 +60,36 @@ export function TrendingCoins() {
       <CardContent className="space-y-4">
         {trending.map((coin, index) => (
           <div
-            key={coin.id}
+            key={coin.id || index}
             className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div className="flex items-center space-x-3">
-              <Badge variant="secondary" className="w-6 h-6 rounded-full p-0 flex items-center justify-center text-xs">
+              <Badge
+                variant="secondary"
+                className="w-6 h-6 rounded-full p-0 flex items-center justify-center text-xs"
+              >
                 {index + 1}
               </Badge>
-              <img src={coin.thumb || "/placeholder.svg"} alt={coin.name} className="w-6 h-6 rounded-full" />
+              <img
+                src={coin.thumb || "/placeholder.svg"}
+                alt={coin.name}
+                className="w-6 h-6 rounded-full"
+              />
               <div>
                 <div className="font-medium text-sm">{coin.name}</div>
-                <div className="text-xs text-muted-foreground uppercase">{coin.symbol}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  {coin.symbol}
+                </div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xs text-muted-foreground">#{coin.market_cap_rank || "N/A"}</div>
+              <div className="text-xs text-muted-foreground">
+                #{coin.market_cap_rank || "N/A"}
+              </div>
             </div>
           </div>
         ))}
       </CardContent>
     </Card>
-  )
+  );
 }

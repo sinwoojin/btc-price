@@ -27,7 +27,7 @@ export function TrendingCoins() {
       const response = await fetch(
         "https://api.coingecko.com/api/v3/search/trending"
       );
-      const data = await response.json();
+      const data: { coins: { item: TrendingCoin }[] } = await response.json();
       const coins = data.coins.slice(0, 10).map((c: any) => c.item);
       setTrending(coins);
       setLoading(false);
@@ -71,9 +71,15 @@ export function TrendingCoins() {
                 {index + 1}
               </Badge>
               <img
-                src={coin.thumb || "/placeholder.svg"}
+                src={coin.thumb || "/frontend/public/placeholder.svg"}
                 alt={coin.name}
                 className="w-6 h-6 rounded-full"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  if (img.src !== window.location.origin + "/placeholder.png") {
+                    img.src = "/font/public/placeholder.svg";
+                  }
+                }}
               />
               <div>
                 <div className="font-medium text-sm">{coin.name}</div>

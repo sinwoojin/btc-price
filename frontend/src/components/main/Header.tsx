@@ -6,8 +6,14 @@ import { Input } from "@components/ui/input";
 import { Moon, Search, Sun } from "lucide-react";
 import Link from "next/link";
 
+import { useAuth, useUser } from "@/context/AuthUserProvider";
+import { useRouter } from "next/navigation";
+
 export function Header() {
   const { theme, toggleTheme } = useTheme();
+  const { accessToken, clearAccessToken } = useAuth();
+  const { clearUser } = useUser();
+  const router = useRouter();
   const isDark = theme === "dark";
 
   const textColor = isDark ? "text-white" : "text-black";
@@ -19,12 +25,18 @@ export function Header() {
     { title: "Options", link: "/options" },
   ];
 
+  const handleLogout = () => {
+    clearAccessToken();
+    clearUser();
+    router.push("/login");
+  };
+
   return (
     <header className="border-b border-border bg-card">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">
                   C
@@ -33,8 +45,8 @@ export function Header() {
               <span className={`text-xl font-bold ${textColor}`}>
                 Coin Arena
               </span>
-            </div>
-            <nav className="hidden md:flex items-center space-x-6">
+            </Link>
+            {/* <nav className="hidden md:flex items-center space-x-6">
               {headerBar.map((item) => (
                 <Button
                   key={item.title}
@@ -44,7 +56,7 @@ export function Header() {
                   {item.title}
                 </Button>
               ))}
-            </nav>
+            </nav> */}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -67,10 +79,26 @@ export function Header() {
                 <Moon className="w-4 h-4 " />
               )}
             </Button>
-            <Link href={"/login"} className={`${textColor}`}>
-              Login
+
+            {/* Account Link - Always visible */}
+            <Link href="/account" className={`${textColor} font-medium hover:opacity-80`}>
+              Account
             </Link>
-            <Button>Sign Up</Button>
+
+            {accessToken ? (
+              <Button onClick={handleLogout} variant="ghost" className={textColor}>
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Link href={"/login"} className={`${textColor} font-medium hover:opacity-80`}>
+                  Login
+                </Link>
+                <Link href="/signup">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

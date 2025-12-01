@@ -191,19 +191,17 @@ export function CoinTable() {
                   <td className="p-4">
                     <div className="flex items-center space-x-3">
                       <Image
-                        width={10}
-                        height={10}
-                        src={`https://s3-symbol-logo.tradingview.com/crypto/${coin}.svg`}
+                        width={32}
+                        height={32}
+                        unoptimized     // 추가!!
+                        src={`https://s3-symbol-logo.tradingview.com/crypto/${coin.name.toLowerCase()}.svg`}
                         alt={coin.name}
                         className="w-8 h-8 rounded-full"
                         onError={(e) => {
-                          console.log("Image load error for", coin.symbol);
                           const img = e.target as HTMLImageElement;
-                          if (
-                            img.src !==
-                            window.location.origin + "/placeholder.svg"
-                          ) {
-                            img.src = "/placeholder.svg";
+
+                          if (!img.src.includes("/placeholder.svg")) {
+                            img.src = "/placeholder.svg";   // public/placeholder.svg
                           }
                         }}
                       />

@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
     credentials: true,
   });
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3001);
   Logger.log(`Server listening on port ${process.env.PORT}`, 'NestApplication');
 }
 bootstrap();

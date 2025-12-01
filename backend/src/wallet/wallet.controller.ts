@@ -9,11 +9,21 @@ export class WalletController {
 
   @Get('balance')
   async getBalance(@Request() req) {
-    return this.walletService.getBalance(req.user.userId);
+    return this.walletService.getBalance(req.user.email);
+  }
+
+  @Get('portfolio')
+  async getPortfolio(@Request() req) {
+    return this.walletService.getPortfolio(req.user.email);
   }
 
   @Post('buy')
   async buyCoin(@Request() req, @Body() body: { coinId: string; amount: number; price: number }) {
-    return this.walletService.buyCoin(req.user.userId, body.coinId, body.amount, body.price);
+    return this.walletService.buyCoin(req.user.email, body.coinId, body.amount, body.price);
+  }
+
+  @Post('sell')
+  async sellCoin(@Request() req, @Body() body: { coinId: string; amount: number; price: number }) {
+    return this.walletService.sellCoin(req.user.email, body.coinId, body.amount, body.price);
   }
 }

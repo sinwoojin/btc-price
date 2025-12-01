@@ -12,10 +12,16 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() body: any) {
+    console.log("📌 Login request body:", body);
+
     const user = await this.authService.validateUser(body.email, body.password);
+
+    console.log("📌 validateUser result:", user);
+
     if (!user) {
       throw new UnauthorizedException();
-    }
-    return this.authService.login(user);
   }
+
+  return this.authService.login(user);
+}
 }

@@ -3,9 +3,9 @@
 // const WS_URL = "wss://testnet.binance.vision/ws";
 const WS_URL = "wss://stream.binance.com:9443/ws";
 
-export const connectTradeStream = (
+export const connectTradeStream = <T>(
   symbol: string,
-  onMessage: (data: string) => void
+  onMessage: (data: T) => void
 ) => {
   const ws = new WebSocket(`${WS_URL}/${symbol.toLowerCase()}@trade`);
   ws.onmessage = (event) => onMessage(JSON.parse(event.data));

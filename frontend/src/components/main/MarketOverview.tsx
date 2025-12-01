@@ -33,9 +33,9 @@ export function MarketOverview() {
           <Tabs defaultValue="spot" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="spot">Spot</TabsTrigger>
-              <TabsTrigger value="futures">Futures</TabsTrigger>
+              {/* <TabsTrigger value="futures">Futures</TabsTrigger>
               <TabsTrigger value="options">Options</TabsTrigger>
-              <TabsTrigger value="defi">DeFi</TabsTrigger>
+              <TabsTrigger value="defi">DeFi</TabsTrigger> */}
             </TabsList>
             <TabsContent value="spot" className="mt-6">
               <CoinTable />

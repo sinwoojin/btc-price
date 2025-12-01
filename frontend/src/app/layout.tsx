@@ -1,6 +1,5 @@
 // src/app/layout.tsx
 
-import BottomNav from "@/components/common/Bottom";
 import { Header } from "@/components/main/Header";
 import { AuthUserProvider } from "@/context/AuthUserProvider";
 import ThemeProvider from "@/lib/utils/theme-context";
@@ -48,7 +47,6 @@ export default function RootLayout({
           <AuthUserProvider>
             <Header />
             {children}
-            <BottomNav />
           </AuthUserProvider>
         </ThemeProvider>
       </body>

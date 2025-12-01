@@ -1,33 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
+    private databaseService: DatabaseService,
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string, name?: string) {
+  async register(email: string, password: string, name: string) {
+    const existingUser = await this.databaseService.findUserByEmail(email);
+    if (existingUser) {
+      throw new BadRequestException('User already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    return this.prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name,
-        wallet: {
-          create: {
-            balance: 0,
-          },
-        },
-      },
+    
+    const user = await this.databaseService.createUser({
+      email,
+      password: hashedPassword,
+      name,
     });
+
+    // Give initial balance (5,000,000 USDT)
+    await this.databaseService.createWallet(user.email, 5000000);
+
+    return { message: 'User created successfully' };
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.databaseService.findUserByEmail(email);
     if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, ...result } = user;
       return result;

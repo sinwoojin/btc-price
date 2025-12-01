@@ -23,7 +23,7 @@ export default async function StockPage({
 
   return (
     <ThemeAwareContainer>
-      <div className="flex flex-col lg:flex-row justify-center items-start gap-6 p-6">
+      <div className="flex flex-col lg:flex-row justify-center items-start gap-6 p-6 h-[calc(100vh-68px)]">
         <div className="flex-1">
           <TradingViewWidget symbol={stockId} />
         </div>

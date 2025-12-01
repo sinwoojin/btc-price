@@ -9,6 +9,11 @@ interface TickerDisplayProps {
   initialOpenPrice: number;
 }
 
+interface TradeMessage {
+  p: string; // price
+}
+
+
 export default function TickerDisplay({
   initialOpenPrice,
 }: TickerDisplayProps) {
@@ -19,7 +24,7 @@ export default function TickerDisplay({
   useEffect(() => {
     setPrice(initialOpenPrice);
 
-    const ws = connectTradeStream("btcusdt", (data) => {
+    const ws = connectTradeStream("btcusdt", (data: TradeMessage) => {
       const newPrice = parseFloat(data.p);
       setPrice(newPrice);
 

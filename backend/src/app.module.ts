@@ -2,15 +2,18 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { PrismaService } from './prisma/prisma.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { WalletModule } from './wallet/wallet.module';
-import { EventsGateway } from './events/events.gateway';
+import { DatabaseModule } from './database/database.module';
 import { EventsModule } from './events/events.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, WalletModule, EventsModule],
+  imports: [
+    DatabaseModule,
+    AuthModule,
+    WalletModule,
+    EventsModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, EventsGateway],
+  providers: [AppService],
 })
 export class AppModule {}

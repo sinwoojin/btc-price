@@ -1,102 +1,17 @@
 "use client";
 
+import { useMarketData } from "@/hooks/useMarketData";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Star, TrendingDown, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-interface CoinData {
-  id: string;
-  name: string;
-  symbol: string;
-  current_price: number;
-  price_change_percentage_24h: number;
-  market_cap: number;
-  total_volume: number;
-  market_cap_rank: number;
-  image: string;
-}
+import { useState } from "react";
 
 export function CoinTable() {
-  const [coins, setCoins] = useState<CoinData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { coins, loading } = useMarketData();
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    let ws: WebSocket | null = null;
-
-    const fetchCoins = async () => {
-      try {
-        const response = await fetch(
-          "https://api.binance.com/api/v3/ticker/24hr"
-        );
-        const data = await response.json();
-
-        const usdtCoins = data.filter((coin: any) =>
-          coin.symbol.endsWith("USDT")
-        );
-
-        const topCoins = usdtCoins
-          .sort((a: any, b: any) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
-          .slice(0, 50)
-          .map((coin: any, index: number) => ({
-            id: coin.symbol.toLowerCase(),
-            name: coin.symbol.replace("USDT", ""),
-            symbol: coin.symbol,
-            current_price: parseFloat(coin.lastPrice),
-            price_change_percentage_24h: parseFloat(coin.priceChangePercent),
-            market_cap: parseFloat(coin.quoteVolume),
-            total_volume: parseFloat(coin.volume),
-            market_cap_rank: index + 1,
-            image: `https://cryptoicons.org/api/icon/${coin.symbol
-              .replace("USDT", "")
-              .toLowerCase()}/200`,
-          }));
-
-        setCoins(topCoins);
-        setLoading(false);
-
-        ws = new WebSocket("wss://stream.binance.com:9443/ws/!ticker@arr");
-
-        ws.onmessage = (event) => {
-          const updates = JSON.parse(event.data);
-
-          setCoins((prevCoins) => {
-            const updated = [...prevCoins];
-
-            for (const update of updates) {
-              if (!update.s.endsWith("USDT")) continue;
-
-              const index = updated.findIndex((c) => c.symbol === update.s);
-              if (index !== -1) {
-                updated[index] = {
-                  ...updated[index],
-                  current_price: parseFloat(update.c),
-                  price_change_percentage_24h: parseFloat(update.P),
-                  total_volume: parseFloat(update.v),
-                  market_cap: parseFloat(update.q),
-                };
-              }
-            }
-
-            return updated;
-          });
-        };
-      } catch (error) {
-        console.error("Error fetching coins:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchCoins();
-
-    return () => {
-      if (ws) ws.close();
-    };
-  }, []);
 
   const toggleFavorite = (coinId: string) => {
     const newFavorites = new Set(favorites);
@@ -251,3 +166,4 @@ export function CoinTable() {
     </Card>
   );
 }
+

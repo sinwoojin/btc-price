@@ -1,41 +1,12 @@
 "use client";
 
+import { useTrendingCoins } from "@/hooks/useTrendingCoins";
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Flame } from "lucide-react";
-import { useEffect, useState } from "react";
-
-interface TrendingCoin {
-  id: string;
-  name: string;
-  symbol: string;
-  market_cap_rank: number;
-  thumb: string;
-  price_btc: number;
-}
 
 export function TrendingCoins() {
-  const [trending, setTrending] = useState<TrendingCoin[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTrending();
-  }, []);
-
-  const fetchTrending = async () => {
-    try {
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/search/trending"
-      );
-      const data: { coins: { item: TrendingCoin }[] } = await response.json();
-      const coins = data.coins.slice(0, 10).map((c: any) => c.item);
-      setTrending(coins);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching trending coins:", error);
-      setLoading(false);
-    }
-  };
+  const { trending, loading } = useTrendingCoins();
 
   if (loading) {
     return (

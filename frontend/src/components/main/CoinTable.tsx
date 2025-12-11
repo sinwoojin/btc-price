@@ -30,31 +30,35 @@ export function CoinTable() {
 
     const fetchCoins = async () => {
       try {
-        // Binance의 24시간 시세 데이터
         const response = await fetch(
           "https://api.binance.com/api/v3/ticker/24hr"
         );
         const data = await response.json();
 
-        // 상위 50개만 표시
-        const topCoins = data.slice(0, 50).map((coin: any, index: number) => ({
-          id: coin.symbol.toLowerCase(),
-          name: coin.symbol.replace("USDT", ""),
-          symbol: coin.symbol,
-          current_price: parseFloat(coin.lastPrice),
-          price_change_percentage_24h: parseFloat(coin.priceChangePercent),
-          market_cap: parseFloat(coin.quoteVolume),
-          total_volume: parseFloat(coin.volume),
-          market_cap_rank: index + 1,
-          image: `https://cryptoicons.org/api/icon/${coin.symbol
-            .replace("USDT", "")
-            .toLowerCase()}/200`, // 코인 아이콘
-        }));
+        const usdtCoins = data.filter((coin: any) =>
+          coin.symbol.endsWith("USDT")
+        );
+
+        const topCoins = usdtCoins
+          .sort((a: any, b: any) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
+          .slice(0, 50)
+          .map((coin: any, index: number) => ({
+            id: coin.symbol.toLowerCase(),
+            name: coin.symbol.replace("USDT", ""),
+            symbol: coin.symbol,
+            current_price: parseFloat(coin.lastPrice),
+            price_change_percentage_24h: parseFloat(coin.priceChangePercent),
+            market_cap: parseFloat(coin.quoteVolume),
+            total_volume: parseFloat(coin.volume),
+            market_cap_rank: index + 1,
+            image: `https://cryptoicons.org/api/icon/${coin.symbol
+              .replace("USDT", "")
+              .toLowerCase()}/200`,
+          }));
 
         setCoins(topCoins);
         setLoading(false);
 
-        // WebSocket 연결 (모든 심볼 실시간 업데이트)
         ws = new WebSocket("wss://stream.binance.com:9443/ws/!ticker@arr");
 
         ws.onmessage = (event) => {
@@ -62,7 +66,10 @@ export function CoinTable() {
 
           setCoins((prevCoins) => {
             const updated = [...prevCoins];
+
             for (const update of updates) {
+              if (!update.s.endsWith("USDT")) continue;
+
               const index = updated.findIndex((c) => c.symbol === update.s);
               if (index !== -1) {
                 updated[index] = {
@@ -74,6 +81,7 @@ export function CoinTable() {
                 };
               }
             }
+
             return updated;
           });
         };
@@ -129,8 +137,8 @@ export function CoinTable() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Top Cryptocurrencies by Market Cap</span>
-          <Badge variant="secondary">Live Data (Binance)</Badge>
+          <span>Top Cryptocurrencies (USDT Market)</span>
+          <Badge variant="secondary">Live Data (Binance USDT)</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -138,29 +146,16 @@ export function CoinTable() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left p-4 font-medium text-muted-foreground">
-                  #
-                </th>
-                <th className="text-left p-4 font-medium text-muted-foreground">
-                  코인 이름(Name)
-                </th>
-                <th className="text-right p-4 font-medium text-muted-foreground">
-                  가격(Price)
-                </th>
-                <th className="text-right p-4 font-medium text-muted-foreground">
-                  24h %
-                </th>
-                <th className="text-right p-4 font-medium text-muted-foreground">
-                  Market Cap
-                </th>
-                <th className="text-right p-4 font-medium text-muted-foreground">
-                  Volume (24h)
-                </th>
-                <th className="text-center p-4 font-medium text-muted-foreground">
-                  Action
-                </th>
+                <th className="text-left p-4">#</th>
+                <th className="text-left p-4">코인</th>
+                <th className="text-right p-4">가격(USDT)</th>
+                <th className="text-right p-4">24h %</th>
+                <th className="text-right p-4">Market Cap</th>
+                <th className="text-right p-4">Volume (24h)</th>
+                <th className="text-center p-4">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {coins.map((coin) => (
                 <tr
@@ -183,25 +178,23 @@ export function CoinTable() {
                           }`}
                         />
                       </Button>
-                      <span className="font-medium">
-                        {coin.market_cap_rank}
-                      </span>
+                      <span>{coin.market_cap_rank}</span>
                     </div>
                   </td>
+
                   <td className="p-4">
                     <div className="flex items-center space-x-3">
                       <Image
                         width={32}
                         height={32}
-                        unoptimized     // 추가!!
+                        unoptimized
                         src={`https://s3-symbol-logo.tradingview.com/crypto/${coin.name.toLowerCase()}.svg`}
                         alt={coin.name}
                         className="w-8 h-8 rounded-full"
                         onError={(e) => {
                           const img = e.target as HTMLImageElement;
-
                           if (!img.src.includes("/placeholder.svg")) {
-                            img.src = "/placeholder.svg";   // public/placeholder.svg
+                            img.src = "/placeholder.svg";
                           }
                         }}
                       />
@@ -213,15 +206,17 @@ export function CoinTable() {
                       </div>
                     </div>
                   </td>
+
                   <td className="p-4 text-right font-mono">
                     {formatPrice(coin.current_price)}
                   </td>
+
                   <td className="p-4 text-right">
                     <div
                       className={`flex items-center justify-end ${
                         coin.price_change_percentage_24h >= 0
-                          ? "text-success"
-                          : "text-destructive"
+                          ? "text-green-600"
+                          : "text-red-600"
                       }`}
                     >
                       {coin.price_change_percentage_24h >= 0 ? (
@@ -232,12 +227,15 @@ export function CoinTable() {
                       {Math.abs(coin.price_change_percentage_24h).toFixed(2)}%
                     </div>
                   </td>
+
                   <td className="p-4 text-right font-mono">
                     {formatMarketCap(coin.market_cap)}
                   </td>
+
                   <td className="p-4 text-right font-mono">
                     {formatMarketCap(coin.total_volume)}
                   </td>
+
                   <td className="p-4 text-center">
                     <Button size="sm" variant="outline">
                       <Link href={`/stock/${coin.symbol}`}>Trade</Link>
@@ -246,6 +244,7 @@ export function CoinTable() {
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
       </CardContent>

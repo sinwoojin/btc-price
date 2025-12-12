@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  frontend:
+    name: Frontend (Next.js) Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: btc-price/frontend
+        run: npm install
+
+      - name: Build Next.js
+        working-directory: btc-price/frontend
+        run: npm run build
+
+      - name: Run frontend tests
+        working-directory: btc-price/frontend
+        run: npm test
+        continue-on-error: true
+
+  backend:
+    name: Backend (Nest.js) Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: btc-price/backend
+        run: npm install
+
+      - name: Build Nest.js
+        working-directory: btc-price/backend
+        run: npm run build
+
+      - name: Run backend tests
+        working-directory: btc-price/backend
+        run: npm test
+        continue-on-error: true

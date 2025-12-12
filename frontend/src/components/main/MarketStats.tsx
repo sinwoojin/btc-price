@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent } from "@components/ui/card"
-import { TrendingUp, TrendingDown, DollarSign, Activity } from "lucide-react"
+import { Activity, DollarSign, TrendingDown, TrendingUp } from "lucide-react"
+import { useState } from "react"
 
 interface MarketData {
   totalMarketCap: number
@@ -14,7 +14,7 @@ interface MarketData {
 }
 
 export function MarketStats() {
-  const [marketData, setMarketData] = useState<MarketData>({
+  const [marketData, _setMarketData] = useState<MarketData>({
     totalMarketCap: 2847392847392,
     totalVolume: 89473829473,
     btcDominance: 52.3,

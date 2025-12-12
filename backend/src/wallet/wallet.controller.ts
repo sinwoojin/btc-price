@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { WalletService } from './wallet.service';
 
@@ -18,12 +25,28 @@ export class WalletController {
   }
 
   @Post('buy')
-  async buyCoin(@Request() req, @Body() body: { coinId: string; amount: number; price: number }) {
-    return this.walletService.buyCoin(req.user.email, body.coinId, body.amount, body.price);
+  async buyCoin(
+    @Request() req,
+    @Body() body: { coinId: string; amount: number; price: number },
+  ) {
+    return this.walletService.buyCoin(
+      req.user.email,
+      body.coinId,
+      body.amount,
+      body.price,
+    );
   }
 
   @Post('sell')
-  async sellCoin(@Request() req, @Body() body: { coinId: string; amount: number; price: number }) {
-    return this.walletService.sellCoin(req.user.email, body.coinId, body.amount, body.price);
+  async sellCoin(
+    @Request() req,
+    @Body() body: { coinId: string; amount: number; price: number },
+  ) {
+    return this.walletService.sellCoin(
+      req.user.email,
+      body.coinId,
+      body.amount,
+      body.price,
+    );
   }
 }

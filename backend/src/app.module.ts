@@ -7,12 +7,7 @@ import { EventsModule } from './events/events.module';
 import { WalletModule } from './wallet/wallet.module';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    AuthModule,
-    WalletModule,
-    EventsModule,
-  ],
+  imports: [DatabaseModule, AuthModule, WalletModule, EventsModule],
   controllers: [AppController],
   providers: [AppService],
 })

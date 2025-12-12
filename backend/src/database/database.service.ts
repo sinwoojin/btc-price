@@ -38,7 +38,11 @@ export class DatabaseService {
     return this.users.find((u) => u.email === email);
   }
 
-  async createUser(data: { email: string; password: string; name?: string }): Promise<User> {
+  async createUser(data: {
+    email: string;
+    password: string;
+    name?: string;
+  }): Promise<User> {
     const user: User = {
       id: this.userIdCounter++,
       email: data.email,
@@ -50,7 +54,10 @@ export class DatabaseService {
   }
 
   // Wallet Methods
-  async createWallet(userEmail: string, initialBalance: number = 5000000): Promise<Wallet> {
+  async createWallet(
+    userEmail: string,
+    initialBalance: number = 5000000,
+  ): Promise<Wallet> {
     const wallet: Wallet = {
       id: this.walletIdCounter++,
       userEmail,
@@ -64,7 +71,10 @@ export class DatabaseService {
     return this.wallets.find((w) => w.userEmail === userEmail);
   }
 
-  async updateWalletBalance(walletId: number, newBalance: number): Promise<Wallet> {
+  async updateWalletBalance(
+    walletId: number,
+    newBalance: number,
+  ): Promise<Wallet> {
     const wallet = this.wallets.find((w) => w.id === walletId);
     if (wallet) {
       wallet.balance = newBalance;

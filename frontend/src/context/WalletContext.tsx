@@ -1,6 +1,5 @@
 "use client";
 
-import { BASE_URL } from "@/config/api";
 import { useAuth, useUser } from "@/context/AuthUserProvider";
 import { fetchClient } from "@/lib/api/fetchClient";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
@@ -90,8 +89,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     console.log("WalletProvider: initializing for user", user.email);
     
     refreshPortfolio();
-    console.log("Connecting to WebSocket:", BASE_URL);
-    const newSocket = io(BASE_URL);
+    console.log("Connecting to WebSocket:", process.env.NEXT_PUBLIC_BASE_URL);
+    const newSocket = io(process.env.NEXT_PUBLIC_BASE_URLBASE_URL);
 
     newSocket.on("connect", () => {
       console.log("WebSocket connected:", newSocket.id);

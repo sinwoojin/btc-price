@@ -1,9 +1,7 @@
-import { BASE_URL } from "@/config/api";
 
 export async function fetchClient(input: string, init: RequestInit = {}) {
-  const url = `${BASE_URL}${input}`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}${input}`;
 
-  // Check if we're in browser environment before accessing localStorage
   const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
   console.log("token", token);
 

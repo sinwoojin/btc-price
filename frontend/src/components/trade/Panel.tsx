@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/context/AuthUserProvider";
 import { fetchClient } from "@/lib/api/fetchClient";
 import { useTheme } from "@/lib/utils/theme-context";
 import { useEffect, useState } from "react";
@@ -21,10 +22,13 @@ export default function TradePanel({ symbol }: { symbol: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { theme } = useTheme();
+  const { accessToken } = useAuth();
   const isDark = theme === "dark";
 
   useEffect(() => {
-    fetchPortfolio();
+    if (accessToken) {
+        fetchPortfolio();
+    }
     const wsUrl = `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`;
     const ws = new WebSocket(wsUrl);
 
@@ -39,8 +43,15 @@ export default function TradePanel({ symbol }: { symbol: string }) {
   }, [symbol]);
 
   const fetchPortfolio = async () => {
+    if (!accessToken) return;
     try {
-      const response = await fetchClient("/wallet/portfolio");
+      const response = await fetchClient("/wallet/portfolio", {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+        },
+        credentials: "include", // 쿠키 포함 (필요 시)
+      });
       if (response.ok) {
         const data = await response.json();
         setPortfolio(data);
@@ -77,7 +88,11 @@ export default function TradePanel({ symbol }: { symbol: string }) {
       const endpoint = type === 'BUY' ? "/wallet/buy" : "/wallet/sell";
       const response = await fetchClient(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        credentials: "include",
         body: JSON.stringify({
           coinId: symbol,
           amount: amount,

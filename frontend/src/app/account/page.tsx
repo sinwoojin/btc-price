@@ -21,7 +21,7 @@ interface Portfolio {
 
 function Account() {
   const { user, clearUser } = useUser();
-  const { clearAccessToken } = useAuth();
+  const { accessToken, clearAccessToken } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const isDark = theme === "dark";
@@ -29,16 +29,16 @@ function Account() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
 
   useEffect(() => {
-    if (user?.userId) {
+    if (accessToken) {
       fetchPortfolio();
     }
-  }, [user]);
+  }, [accessToken]);
 
   const fetchPortfolio = async () => {
     try {
       const response = await fetchClient("/wallet/portfolio", {
         headers: {
-          Authorization: `Bearer ${user?.email}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         credentials: "include",

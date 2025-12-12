@@ -4,61 +4,26 @@ import SettingCard from "@/components/SettingCard";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuth, useUser } from "@/context/AuthUserProvider";
-import { fetchClient } from "@/lib/api/fetchClient";
+import { useWallet } from "@/context/WalletContext";
 import { useTheme } from "@/lib/utils/theme-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-interface Portfolio {
-  balance: number;
-  holdings: {
-    coinId: string;
-    amount: number;
-    averagePrice: number;
-  }[];
-}
 
 function Account() {
-  const { user, clearUser } = useUser();
-  const { accessToken, clearAccessToken } = useAuth();
+  const { user } = useUser();
+  const { clearAccessToken } = useAuth();
+  const { clearUser } = useUser();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const isDark = theme === "dark";
 
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
+  const { portfolio } = useWallet();
 
-  const fetchPortfolio = async () => {
-    try {
-      const response = await fetchClient("/wallet/portfolio", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        method: "GET",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPortfolio(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch portfolio:", err);
-    }
-  };
-
-  
   const handleLogout = () => {
     clearAccessToken();
     clearUser();
     router.push("/login");
   };
-  
-  useEffect(() => {
-    if (accessToken) {
-      fetchPortfolio();
-    }
-  }, [accessToken, fetchPortfolio]);
   
   return (
     <div

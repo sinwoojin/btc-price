@@ -45,14 +45,12 @@ function LoginPage() {
 
       if (response.ok) {
         const data = await response.json();
-        // Context 업데이트 (로컬 스토리지는 Provider가 처리)
-        if (data.access_token) {
-          setAccessToken(data.access_token);
+        if (data.accessToken) {
+          setAccessToken(data.accessToken);
         }
         if (data.user) {
           setUser(data.user);
         }
-        // 메인 페이지로 이동
         router.push("/");
       } else {
         const data = await response.json();

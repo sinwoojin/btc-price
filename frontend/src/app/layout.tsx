@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/main/Header";
 import { AuthUserProvider } from "@/context/AuthUserProvider";
+import { WalletProvider } from "@/context/WalletContext";
 import ThemeProvider from "@/lib/utils/theme-context";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -45,8 +46,10 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <AuthUserProvider>
-            <Header />
-            {children}
+            <WalletProvider>
+              <Header />
+              {children}
+            </WalletProvider>
           </AuthUserProvider>
         </ThemeProvider>
       </body>

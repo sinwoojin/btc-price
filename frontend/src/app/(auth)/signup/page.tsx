@@ -50,7 +50,6 @@ function SignupPage() {
       });
 
       if (response.ok) {
-        // 회원가입 성공 시 로그인 페이지로 이동
         router.push("/login");
       } else {
         const data = await response.json();
@@ -58,6 +57,7 @@ function SignupPage() {
       }
     } catch (err) {
       setError("서버 오류가 발생했습니다.");
+      console.log(err)
     }
   };
 

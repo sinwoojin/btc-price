@@ -60,6 +60,7 @@ function LoginPage() {
       }
     } catch (err) {
       setError("서버 오류가 발생했습니다.");
+      console.error("Failed to login:", err);
     } finally {
       setLoading(false);
     }

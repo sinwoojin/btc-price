@@ -14,7 +14,7 @@ interface MarketData {
 }
 
 export function MarketStats() {
-  const [marketData, _setMarketData] = useState<MarketData>({
+  const [marketData, _] = useState<MarketData>({
     totalMarketCap: 2847392847392,
     totalVolume: 89473829473,
     btcDominance: 52.3,

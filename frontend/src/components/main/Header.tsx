@@ -18,13 +18,6 @@ export function Header() {
 
   const textColor = isDark ? "text-white" : "text-black";
 
-  const headerBar = [
-    { title: "Markets", link: "/markets" },
-    { title: "Trading", link: "/trading" },
-    { title: "Futures", link: "/futures" },
-    { title: "Options", link: "/options" },
-  ];
-
   const handleLogout = () => {
     clearAccessToken();
     clearUser();
@@ -46,17 +39,6 @@ export function Header() {
                 Coin Arena
               </span>
             </Link>
-            {/* <nav className="hidden md:flex items-center space-x-6">
-              {headerBar.map((item) => (
-                <Button
-                  key={item.title}
-                  variant={"ghost"}
-                  className={`${textColor} font-medium`}
-                >
-                  {item.title}
-                </Button>
-              ))}
-            </nav> */}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -80,7 +62,6 @@ export function Header() {
               )}
             </Button>
 
-            {/* Account Link - Always visible */}
             <Link href="/account" className={`${textColor} font-medium hover:opacity-80`}>
               Account
             </Link>

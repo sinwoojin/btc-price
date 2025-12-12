@@ -1,4 +1,3 @@
-// src/components/ui/CountingNumber.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -19,7 +18,6 @@ export const CountingNumber = ({
   const animationFrameId = useRef<number | null>(null);
 
   useEffect(() => {
-    // value가 변경될 때마다 애니메이션 시작
     const startTimestamp = performance.now();
     startValue.current = currentValue;
 

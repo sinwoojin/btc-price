@@ -110,6 +110,7 @@ export default function TradePanel({ symbol }: { symbol: string }) {
       }
     } catch (err) {
       setError("서버 오류가 발생했습니다.");
+      console.error("Failed to trade:", err);
     } finally {
       setLoading(false);
     }

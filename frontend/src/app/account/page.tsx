@@ -28,12 +28,6 @@ function Account() {
 
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
 
-  useEffect(() => {
-    if (accessToken) {
-      fetchPortfolio();
-    }
-  }, [accessToken]);
-
   const fetchPortfolio = async () => {
     try {
       const response = await fetchClient("/wallet/portfolio", {
@@ -53,12 +47,19 @@ function Account() {
     }
   };
 
+  
   const handleLogout = () => {
     clearAccessToken();
     clearUser();
     router.push("/login");
   };
-
+  
+  useEffect(() => {
+    if (accessToken) {
+      fetchPortfolio();
+    }
+  }, [accessToken, fetchPortfolio]);
+  
   return (
     <div
       className={`min-h-screen flex flex-col justify-center items-center ${

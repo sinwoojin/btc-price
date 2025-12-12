@@ -11,7 +11,7 @@ export const fetchTopCoins = async (): Promise<CoinData[]> => {
   }
   const data = await response.json();
 
-  const usdtCoins = data.filter((coin: any) => coin.symbol.endsWith("USDT"));
+  const usdtCoins = data.filter((coin: CoinData) => coin.symbol.endsWith("USDT"));
 
   return usdtCoins
     .sort((a: any, b: any) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))

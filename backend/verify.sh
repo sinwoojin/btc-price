@@ -9,7 +9,7 @@ echo $REGISTER_RESPONSE
 echo "Logging in..."
 LOGIN_RESPONSE=$(curl -s -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email": "test@example.com", "password": "password123"}')
 echo $LOGIN_RESPONSE
-TOKEN=$(echo $LOGIN_RESPONSE | grep -o '"access_token":"[^"]*' | grep -o '[^"]*$')
+TOKEN=$(echo $LOGIN_RESPONSE | grep -o '"accessToken":"[^"]*' | grep -o '[^"]*$')
 echo "Token: $TOKEN"
 
 # Get Balance

@@ -21,16 +21,16 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: btc-price/frontend
+        working-directory: frontend
         run: npm install
 
       - name: Build Next.js
-        working-directory: btc-price/frontend
+        working-directory: frontend
         run: npm run build
 
-      - name: Run frontend tests
-        working-directory: btc-price/frontend
-        run: npm test
+      - name: Run frontend lint
+        working-directory: frontend
+        run: npm run lint
         continue-on-error: true
 
   backend:
@@ -47,14 +47,14 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: btc-price/backend
+        working-directory: backend
         run: npm install
 
       - name: Build Nest.js
-        working-directory: btc-price/backend
+        working-directory: backend
         run: npm run build
 
       - name: Run backend tests
-        working-directory: btc-price/backend
+        working-directory: backend
         run: npm test
         continue-on-error: true

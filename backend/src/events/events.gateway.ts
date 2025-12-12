@@ -1,6 +1,7 @@
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -19,9 +20,14 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client disconnected: ${client.id}`);
   }
 
+  @SubscribeMessage('joinUserRoom')
+  handleJoinRoom(client: Socket, userId: string) {
+    client.join(`user-${userId}`);
+    console.log(`User ${userId} joined room user-${userId}`);
+    return { success: true };
+  }
+
   sendWalletUpdate(userId: string, newBalance: number) {
-    // In a real app, you'd target the specific user's socket room
-    // For this demo, we'll just broadcast or emit to a room named after userId
     this.server
       .to(`user-${userId}`)
       .emit('walletUpdate', { balance: newBalance });

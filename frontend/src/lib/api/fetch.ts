@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/config/api";
 import { refreshAccessTokenAPI } from "./auth";
 
 let isRefreshing = false;
@@ -25,7 +24,7 @@ export async function fetchWithAuth(
   clearAccessToken: () => void, // 토큰 제거 함수를 인자로 받음
   init?: RequestInit
 ) {
-  const url = `${process.env.NEXT_PUBLIC_BASE_URL || BASE_URL}${input}`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}${input}`;
 
   const requestHeaders = new Headers(init?.headers);
   if (accessToken) {

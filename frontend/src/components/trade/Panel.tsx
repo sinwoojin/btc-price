@@ -1,34 +1,21 @@
 "use client";
 
-import { useAuth } from "@/context/AuthUserProvider";
+import { useWallet } from "@/context/WalletContext";
 import { fetchClient } from "@/lib/api/fetchClient";
 import { useTheme } from "@/lib/utils/theme-context";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
-interface Portfolio {
-  balance: number;
-  holdings: {
-    coinId: string;
-    amount: number;
-    averagePrice: number;
-  }[];
-}
-
 export default function TradePanel({ symbol }: { symbol: string }) {
   const [price, setPrice] = useState<number | null>(null);
   const [inputQty, setInputQty] = useState("");
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { theme } = useTheme();
-  const { accessToken } = useAuth();
+  const { portfolio, refreshPortfolio } = useWallet();
   const isDark = theme === "dark";
 
   useEffect(() => {
-    if (accessToken) {
-        fetchPortfolio();
-    }
     const wsUrl = `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`;
     const ws = new WebSocket(wsUrl);
 
@@ -41,25 +28,6 @@ export default function TradePanel({ symbol }: { symbol: string }) {
       ws.close();
     };
   }, [symbol]);
-
-  const fetchPortfolio = async () => {
-    if (!accessToken) return;
-    try {
-      const response = await fetchClient("/wallet/portfolio", {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-        },
-        credentials: "include", // 쿠키 포함 (필요 시)
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPortfolio(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch portfolio:", err);
-    }
-  };
 
   const handleTrade = async (type: 'BUY' | 'SELL') => {
     if (!inputQty || !price) return;
@@ -90,9 +58,7 @@ export default function TradePanel({ symbol }: { symbol: string }) {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
         },
-        credentials: "include",
         body: JSON.stringify({
           coinId: symbol,
           amount: amount,
@@ -103,7 +69,7 @@ export default function TradePanel({ symbol }: { symbol: string }) {
       if (response.ok) {
         alert(`${type === 'BUY' ? "매수" : "매도"} 성공!`);
         setInputQty("");
-        fetchPortfolio(); // 잔액 갱신
+        refreshPortfolio(); // 잔액 갱신
       } else {
         const data = await response.json();
         setError(data.message || `${type === 'BUY' ? "매수" : "매도"} 실패`);

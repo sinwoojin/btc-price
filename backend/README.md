@@ -85,11 +85,11 @@ Content-Type: application/json
 ```bash
 # 잔액 조회
 GET /wallet/balance
-Authorization: Bearer {access_token}
+Authorization: Bearer {accessToken}
 
 # 코인 구매
 POST /wallet/buy
-Authorization: Bearer {access_token}
+Authorization: Bearer {accessToken}
 Content-Type: application/json
 {
   "coinId": "bitcoin",

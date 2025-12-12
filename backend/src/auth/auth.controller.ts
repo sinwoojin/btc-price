@@ -13,7 +13,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }):Promise<{access_token: string; user: LoginUser}> {
+  async login(@Body() body: { email: string; password: string }):Promise<{accessToken: string; user: LoginUser}> {
     console.log('📌 Login request body:', body);
 
     const user = await this.authService.validateUser(body.email, body.password);

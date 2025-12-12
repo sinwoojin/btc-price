@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useLayoutEffect, useState } from "react";
 
 interface User {
   email: string;
@@ -20,6 +20,7 @@ interface UserContextType {
   user: User | null;
   setUser: (user: User) => void;
   clearUser: () => void;
+  isLoaded: boolean;
 }
 
 // Context 생성
@@ -44,44 +45,56 @@ export const useUser = () => {
 };
 
 export function AuthUserProvider({ children }: { children: React.ReactNode }) {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [accessToken, setAccessTokenState] = useState<string | null>(null);
+  const [user, setUserState] = useState<User | null>(null);
 
-  // 로컬 스토리지에서 상태 불러오기
-  useEffect(() => {
+  useLayoutEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
-    if (storedToken) {
-      setAccessToken(storedToken);
-    }
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    
+    if (storedToken) {
+      setAccessTokenState(storedToken);
     }
+    if (storedUser) {
+      setUserState(JSON.parse(storedUser));
+    }
+    
+    setIsLoaded(true);
   }, []);
 
-  // 상태 변경 시 로컬 스토리지에 저장
-  useEffect(() => {
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
-    } else {
-      localStorage.removeItem("accessToken");
-    }
-  }, [accessToken]);
+  const setAccessToken = (token: string) => {
+    setAccessTokenState(token);
+    localStorage.setItem("accessToken", token);
+  };
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("user");
-    }
-  }, [user]);
+  const clearAccessToken = () => {
+    setAccessTokenState(null);
+    localStorage.removeItem("accessToken");
+  };
+
+  const setUser = (user: User) => {
+    setUserState(user);
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const clearUser = () => {
+    setUserState(null);
+    localStorage.removeItem("user");
+  };
 
   const authValue = {
     accessToken,
     setAccessToken,
-    clearAccessToken: () => setAccessToken(null),
+    clearAccessToken,
   };
-  const userValue = { user, setUser, clearUser: () => setUser(null) };
+  
+  const userValue = { 
+    user, 
+    setUser, 
+    clearUser, 
+    isLoaded 
+  };
 
   return (
     <AuthContext.Provider value={authValue}>

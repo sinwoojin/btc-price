@@ -1,7 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { DatabaseService, User } from '../database/database.service';
+import { DatabaseService } from '../database/database.service';
+
+export interface LoginUser {
+  id: number;
+  email: string;
+  name?: string;
+}
+
 
 @Injectable()
 export class AuthService {
@@ -30,7 +37,7 @@ export class AuthService {
     return { message: 'User created successfully' };
   }
 
-  async validateUser(email: string, pass: string): Promise<{id:number; email: string; name?: string} | null> {
+  async validateUser(email: string, pass: string): Promise<LoginUser | null> {
     const user = await this.databaseService.findUserByEmail(email);
     if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, ...result } = user;
@@ -39,7 +46,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User) {
+  async login(user: LoginUser) {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
